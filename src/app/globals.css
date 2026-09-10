@@ -1,0 +1,117 @@
+:root {
+  --bg: #f7f7f5;
+  --panel: #ffffff;
+  --ink: #1c1c1a;
+  --muted: #6b6b66;
+  --line: #dedcd6;
+  --accent: #1f5f4e;
+  --warn: #8a5a12;
+  --danger: #9a2a24;
+  --ok: #1f5f4e;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+a { color: var(--accent); }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 24px 20px 80px; }
+
+header.app {
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+header.app .inner {
+  max-width: 1120px; margin: 0 auto; padding: 14px 20px;
+  display: flex; align-items: baseline; gap: 16px;
+}
+header.app h1 { font-size: 15px; margin: 0; letter-spacing: .02em; }
+header.app .sub { color: var(--muted); font-size: 12px; }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+.panel > h2 { font-size: 14px; margin: 0 0 4px; }
+.panel > .hint { color: var(--muted); font-size: 12px; margin: 0 0 14px; }
+
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+.tabs button {
+  border: none; background: none; padding: 9px 16px; cursor: pointer;
+  font-size: 13px; color: var(--muted); border-bottom: 2px solid transparent;
+  font-family: inherit;
+}
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+
+.grid { display: grid; gap: 12px 16px; }
+.grid.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid.c4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 760px) { .grid.c2, .grid.c3, .grid.c4 { grid-template-columns: 1fr; } }
+
+label.field { display: block; }
+label.field > span { display: block; font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+input, select, textarea {
+  width: 100%; padding: 6px 8px; font-size: 13px; font-family: inherit;
+  border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--ink);
+}
+input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+input[type="number"] { text-align: right; font-variant-numeric: tabular-nums; }
+
+button.btn {
+  font-family: inherit; font-size: 13px; padding: 6px 14px; cursor: pointer;
+  border: 1px solid var(--line); background: #fff; border-radius: 4px; color: var(--ink);
+}
+button.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.btn.small { padding: 3px 9px; font-size: 12px; }
+button.btn:disabled { opacity: .5; cursor: default; }
+
+table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.data th, table.data td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+table.data th { background: #f3f2ee; font-weight: 600; }
+table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll-x { overflow-x: auto; }
+
+.verdict { display: inline-block; padding: 3px 12px; border-radius: 999px; font-weight: 600; font-size: 13px; }
+.verdict.fair { background: #e3efe9; color: var(--ok); }
+.verdict.review { background: #f6ecd8; color: var(--warn); }
+.verdict.review_strong { background: #f6dedc; color: var(--danger); }
+.verdict.insufficient { background: #ebeae6; color: var(--muted); }
+
+.note { font-size: 12px; color: var(--muted); }
+.warnbox {
+  border-left: 3px solid var(--warn); background: #fdf8ee;
+  padding: 9px 12px; font-size: 12.5px; margin: 10px 0; border-radius: 0 4px 4px 0;
+}
+.stat { display: flex; flex-wrap: wrap; gap: 22px; }
+.stat > div > .k { font-size: 12px; color: var(--muted); }
+.stat > div > .v { font-size: 18px; font-variant-numeric: tabular-nums; }
+
+.row-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.savebar {
+  position: sticky; bottom: 0; background: var(--panel); border-top: 1px solid var(--line);
+  padding: 10px 20px; display: flex; gap: 12px; align-items: center; justify-content: flex-end;
+  margin: 0 -20px -80px; font-size: 12px;
+}
+
+@media print {
+  header.app, .tabs, .savebar, .no-print { display: none !important; }
+  body { background: #fff; font-size: 10.5pt; }
+  .wrap { max-width: none; padding: 0; }
+  .panel { border: none; padding: 0; margin: 0 0 10mm; break-inside: avoid; }
+  .page-break { break-before: page; }
+  table.data { font-size: 9pt; }
+  @page { size: A4; margin: 14mm 12mm; }
+}

@@ -222,6 +222,41 @@ export interface ReletAssumption {
   vacantMonths: number
 }
 
+/**
+ * 更新側に共通する費用設定。据え置き・希望額・代案の3シナリオはこれを共有し、
+ * 家賃だけが違う。倍率で持つ更新料は各シナリオの家賃から再計算される（仕様書 §4）。
+ */
+export interface RenewalPlan {
+  /** 契約期間（月）。更新料の発生月 1 + k·C を決める。 */
+  contractMonths: number
+  /** 更新料。固定額・倍率・不明のいずれか。 */
+  renewalFee: Amount
+  monthly: MonthlyItem[]
+  otherOneTime: OneTimeItem[]
+  discounts: DiscountItem[]
+  freeRent: FreeRentItem[]
+  deposits: DepositItem[]
+  prepaidRent: Yen
+}
+
+/** 転居候補。比較物件のうち転居先として検討するもの。 */
+export interface MoveCandidate {
+  id: string
+  /** 参照する比較物件の property.id。 */
+  comparableId: string
+  label: string
+  rent: Yen
+  managementFee: Yen
+  contractMonths: number
+  renewalFee: Amount
+  monthly: MonthlyItem[]
+  oneTime: OneTimeItem[]
+  discounts: DiscountItem[]
+  freeRent: FreeRentItem[]
+  deposits: DepositItem[]
+  prepaidRent: Yen
+}
+
 /** 案件。仕様書 §9「案件単位で保存する」。 */
 export interface Case {
   id: string
@@ -237,8 +272,11 @@ export interface Case {
   currentManagementFee: Yen
   desiredRent: Yen
   desiredManagementFee: Yen
+  /** 代案の家賃（貸主が選ぶ第3案）。未設定なら代案シナリオを作らない。 */
+  alternativeRent?: Yen
   comparables: Comparable[]
-  scenarios: Scenario[]
+  renewal: RenewalPlan
+  moveCandidates: MoveCandidate[]
   settings: ComparisonSettings
   relet: ReletAssumption
   thresholds: AssessmentThresholds
