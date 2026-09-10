@@ -1,0 +1,5 @@
+node_modules/
+.next/
+*.tsbuildinfo
+data/cases/*.json
+!data/cases/.gitkeep
