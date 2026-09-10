@@ -182,7 +182,7 @@ export interface AssessmentThresholds {
 export const DEFAULT_THRESHOLDS: AssessmentThresholds = {
   fairBandPct: 2.5,
   strongWarningPct: 20,
-  minSampleCount: 8,
+  minSampleCount: 5,
 }
 
 /** 比較物件の採否（仕様書 §2）。 */

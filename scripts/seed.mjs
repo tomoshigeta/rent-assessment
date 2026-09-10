@@ -78,7 +78,7 @@ const c = {
   }],
   settings: { horizonMonths: 24, searchHorizonMonths: 120, rounding: 'round' },
   relet: { reletMonthlyIncome: 210_000, vacantMonths: 2 },
-  thresholds: { fairBandPct: 2.5, strongWarningPct: 20, minSampleCount: 8 },
+  thresholds: { fairBandPct: 2.5, strongWarningPct: 20, minSampleCount: 5 },
 }
 
 const dir = path.join(process.cwd(), 'data', 'cases')

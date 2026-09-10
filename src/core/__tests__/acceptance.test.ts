@@ -243,7 +243,7 @@ describe('§6 借主側の上限目安', () => {
 })
 
 describe('既定の閾値（Q17 で決めた仮値）', () => {
-  it('±2.5% / ±20% / 8件', () => {
-    expect(DEFAULT_THRESHOLDS).toEqual({ fairBandPct: 2.5, strongWarningPct: 20, minSampleCount: 8 })
+  it('±2.5% / ±20% / 5件', () => {
+    expect(DEFAULT_THRESHOLDS).toEqual({ fairBandPct: 2.5, strongWarningPct: 20, minSampleCount: 5 })
   })
 })

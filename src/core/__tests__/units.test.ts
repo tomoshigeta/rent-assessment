@@ -114,12 +114,23 @@ describe('希望額の判定（仕様書 §2 / Q17 の閾値）', () => {
   const eight = (base: number) =>
     Array.from({ length: 8 }, (_, i) => comparable(`比較${i + 1}`, base + (i - 4) * 1_000))
 
-  it('採用事例が8件未満なら乖離率によらず資料不足', () => {
-    const r = assessDesiredRent(205_000, eight(200_000).slice(0, 7), DEFAULT_THRESHOLDS)
+  it('採用事例が最低件数（5件）に満たなければ乖離率によらず資料不足', () => {
+    const comps = eight(200_000).slice(0, 4)
+    const bench = median(comps.map((c) => c.rent + c.managementFee))
+    // 乖離率が0でも件数で落ちる
+    const r = assessDesiredRent(bench, comps, DEFAULT_THRESHOLDS)
     expect(r.verdict).toBe('insufficient')
-    expect(r.sampleCount).toBe(7)
+    expect(r.sampleCount).toBe(4)
     // 基準賃料自体は参考値として出す
     expect(r.benchmarkTotal).not.toBeNull()
+  })
+
+  it('ちょうど5件あれば判定に進む', () => {
+    const comps = eight(200_000).slice(0, 5)
+    const bench = median(comps.map((c) => c.rent + c.managementFee))
+    const r = assessDesiredRent(bench, comps, DEFAULT_THRESHOLDS)
+    expect(r.sampleCount).toBe(5)
+    expect(r.verdict).toBe('fair')
   })
 
   it('中央値から±2.5%以内なら妥当', () => {

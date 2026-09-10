@@ -56,7 +56,7 @@ export function missingRequiredFields(c: Comparable): string[] {
  * 希望額の妥当性を周辺募集との比較で判定する。仕様書 §2。
  *
  * 閾値は Q17 で決めた仮値であり、実データで確定するまでの暫定値である
- * （fairBandPct=2.5, strongWarningPct=20, minSampleCount=8）。
+ * （fairBandPct=2.5, strongWarningPct=20, minSampleCount=5）。
  * 判定は周辺比較のみで行い、転居費用による上限では「妥当」に変更しない（仕様書 §2）。
  */
 export function assessDesiredRent(
