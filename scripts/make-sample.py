@@ -28,7 +28,8 @@ LISTINGS = [
 wb = load_workbook(SRC)
 for name, rows in (("対象物件", [SUBJECT]), ("比較事例", LISTINGS)):
     ws = wb[name]
-    for r, row in enumerate(rows, start=2):          # 2行目の記入例を上書きする
+    # 2行目は記入例として残し、3行目から書く（columns.json の firstDataRow に合わせる）
+    for r, row in enumerate(rows, start=3):
         for c, v in enumerate(row, start=1):
             # openpyxl の cell(value=None) は既存値を消さないため、必ず代入する
             cell = ws.cell(row=r, column=c)
