@@ -8,8 +8,8 @@ import { describe, expect, it } from 'vitest'
 import { computeScenario } from '../scenario'
 import { findCrossovers } from '../compare'
 import { landlordFloor, reletGrossIncome, tenantCeiling } from '../bounds'
-import { DEFAULT_SETTINGS, DEFAULT_THRESHOLDS } from '../types'
-import { times, yen } from '../money'
+import { DEFAULT_SETTINGS, DEFAULT_THRESHOLDS } from '../../types'
+import { times, yen } from '../../money'
 import { MAN, scenario, startupCost } from './helpers'
 
 const R = DEFAULT_SETTINGS.rounding

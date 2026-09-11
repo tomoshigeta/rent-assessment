@@ -1,5 +1,5 @@
-import type { Amount, Yen } from './money'
-import type { Case, MoveCandidate, RenewalPlan, Scenario, ScenarioKind } from './types'
+import type { Amount, Yen } from '../money'
+import type { Case, MoveCandidate, RenewalPlan, Scenario, ScenarioKind } from '../types'
 
 /**
  * 更新シナリオを組み立てる。

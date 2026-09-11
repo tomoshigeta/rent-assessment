@@ -1,5 +1,5 @@
-import { resolveAmount, toYen, type AmountContext, type Yen } from './money'
-import type { RecurringSchedule, Scenario } from './types'
+import { resolveAmount, toYen, type AmountContext, type Yen } from '../money'
+import type { RecurringSchedule, Scenario } from '../types'
 
 /**
  * 定期的な費用の発生月を列挙する。

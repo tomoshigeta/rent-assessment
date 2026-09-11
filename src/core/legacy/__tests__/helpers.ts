@@ -1,5 +1,5 @@
-import type { Scenario } from '../types'
-import { yen } from '../money'
+import type { Scenario } from '../../types'
+import { yen } from '../../money'
 
 export const MAN = 10_000
 

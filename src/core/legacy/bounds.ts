@@ -1,6 +1,6 @@
-import { toYen, type RoundingMode, type Yen } from './money'
+import { toYen, type RoundingMode, type Yen } from '../money'
 import { computeScenario } from './scenario'
-import type { Scenario } from './types'
+import type { Scenario } from '../types'
 
 /**
  * 貸主側の下限目安 L。仕様書 §6（Q5/Q7 の決定により改訂）。

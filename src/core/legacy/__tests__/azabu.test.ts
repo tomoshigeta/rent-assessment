@@ -5,14 +5,15 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { assessDesiredRent, median, DEFAULT_THRESHOLDS, type Case } from '../index'
+import { assessDesiredRent, median } from '../../assess'
+import { DEFAULT_THRESHOLDS, type Case, type Comparable } from '../../types'
 
 const c: Case = JSON.parse(
   readFileSync(path.join(process.cwd(), 'data/cases/azabu-real-listings.json'), 'utf8'),
 )
 
 describe('実図面6件による判定', () => {
-  const bench = median(c.comparables.map((x) => x.rent + x.managementFee))
+  const bench = median(c.comparables.map((x: Comparable) => x.rent + x.managementFee))
 
   it('6件は最低件数5件を満たすので判定に進む', () => {
     expect(c.comparables.length).toBe(6)
@@ -35,8 +36,8 @@ describe('実図面6件による判定', () => {
   })
 
   it('図面に記載のない金額は不明のまま保持され、0円と確定していない', () => {
-    const unknowns = c.comparables.flatMap((x) =>
-      x.initialCosts.filter((i) => i.amount.kind === 'unknown').map((i) => `${x.property.name}: ${i.label}`),
+    const unknowns = c.comparables.flatMap((x: Comparable) =>
+      x.initialCosts.filter((i: { amount: { kind: string } }) => i.amount.kind === 'unknown').map((i: { label: string }) => `${x.property.name}: ${i.label}`),
     )
     expect(unknowns).toEqual([
       '南麻布1-5-8 702号室: 鍵交換費',

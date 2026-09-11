@@ -1,4 +1,4 @@
-import type { Yen } from './money'
+import type { Yen } from '../money'
 import type { ScenarioResult } from './scenario'
 
 /** どちらが安いか。 */

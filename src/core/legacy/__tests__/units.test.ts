@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { occurrenceMonths } from '../scenario'
 import { landlordFloor, reletGrossIncome } from '../bounds'
-import { assessDesiredRent, median, missingRequiredFields } from '../assess'
-import { resolveAmount, toYen, times, unknown, yen } from '../money'
-import { DEFAULT_THRESHOLDS, type Comparable, type Property } from '../types'
+import { assessDesiredRent, median, missingRequiredFields } from '../../assess'
+import { resolveAmount, toYen, times, unknown, yen } from '../../money'
+import { DEFAULT_THRESHOLDS, type Comparable, type Property } from '../../types'
 import { MAN } from './helpers'
 
 describe('端数処理（仕様書 §4 / Q6）', () => {
@@ -178,7 +178,7 @@ describe('希望額の判定（仕様書 §2 / Q17 の閾値）', () => {
     const comps = [...eight(200_000), comparable('欠落', 0, 0)]
     const r = assessDesiredRent(205_000, comps, DEFAULT_THRESHOLDS)
     expect(r.sampleCount).toBe(8)
-    expect(r.incompleteComparables.some((s) => s.startsWith('欠落'))).toBe(true)
+    expect(r.incompleteComparables.some((s: string) => s.startsWith('欠落'))).toBe(true)
     expect(r.reasons.join()).toContain('欠落')
   })
 

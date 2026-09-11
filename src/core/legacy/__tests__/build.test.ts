@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { buildScenarios, emptyMoveCandidate, emptyRenewalPlan } from '../build'
 import { computeScenario, occurrenceMonths } from '../scenario'
-import { times, yen } from '../money'
-import { DEFAULT_SETTINGS, DEFAULT_THRESHOLDS, RULES_VERSION, type Case } from '../types'
+import { times, yen } from '../../money'
+import { DEFAULT_SETTINGS, DEFAULT_THRESHOLDS, RULES_VERSION, type Case } from '../../types'
 import { MAN } from './helpers'
 
 const baseCase = (over: Partial<Case> = {}): Case => ({
