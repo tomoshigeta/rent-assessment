@@ -10,7 +10,6 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "seed": "node scripts/seed.mjs",
     "template": "python3 scripts/make-template.py && python3 scripts/make-sample.py"
   },
   "dependencies": {

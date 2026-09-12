@@ -173,3 +173,7 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
   .doc table.cases { font-size: 9pt; }
   .doc table.cases tr.more td { font-size: 8pt; }
 }
+
+.panel h3 { font-size: 13px; margin: 20px 0 7px; padding-left: 9px; border-left: 3px solid var(--accent); }
+.panel h3:first-of-type { margin-top: 4px; }
+.panel .lead { font-size: 14px; line-height: 1.8; margin: 0 0 16px; }

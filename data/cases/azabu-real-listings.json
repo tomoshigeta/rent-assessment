@@ -1,0 +1,568 @@
+{
+  "id": "azabu-real-listings",
+  "title": "麻布十番エリア 実図面6件による検証",
+  "rulesVersion": "0.1.0",
+  "createdAt": "2026-09-10T19:00:12.392Z",
+  "updatedAt": "2026-09-10T19:00:12.392Z",
+  "subject": {
+    "id": "subject",
+    "name": "（対象物件を入力してください）",
+    "use": "residential",
+    "address": "",
+    "stations": [],
+    "areaSqm": 0,
+    "provenance": "entered"
+  },
+  "currentRent": 0,
+  "currentManagementFee": 0,
+  "desiredRent": 0,
+  "desiredManagementFee": 0,
+  "comparables": [
+    {
+      "property": {
+        "id": "urban-park-0902",
+        "name": "アーバンパーク麻布十番 0902号室",
+        "use": "residential",
+        "address": "東京都港区麻布十番2-12-12",
+        "stations": [
+          {
+            "line": "東京メトロ南北線",
+            "station": "麻布十番",
+            "walkMinutes": 3
+          },
+          {
+            "line": "東京メトロ日比谷線",
+            "station": "六本木",
+            "walkMinutes": 14
+          }
+        ],
+        "areaSqm": 42.14,
+        "builtYearMonth": "1999-11",
+        "floor": 9,
+        "totalFloors": 12,
+        "provenance": "extracted",
+        "source": {
+          "file": "募集図面.pdf",
+          "page": 1,
+          "documentDate": "2026-09-01"
+        },
+        "note": "更新料 新賃料1ヶ月 / 退去時ハウスクリーニング60,500円 / 1年未満解約で賃料1ヶ月の違約金"
+      },
+      "status": "adopted",
+      "reason": "麻布十番駅徒歩5分圏・居住用・面積36〜43㎡",
+      "rent": 310000,
+      "managementFee": 10000,
+      "initialCosts": [
+        {
+          "id": "urban-park-0902-0",
+          "label": "敷金",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 1,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "urban-park-0902-1",
+          "label": "礼金",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 0
+          }
+        },
+        {
+          "id": "urban-park-0902-2",
+          "label": "鍵交換費用",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 38500
+          }
+        },
+        {
+          "id": "urban-park-0902-3",
+          "label": "住宅保険（2年）",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 21500
+          }
+        },
+        {
+          "id": "urban-park-0902-4",
+          "label": "保証料（初回）",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 0.4,
+            "base": "rent"
+          }
+        }
+      ]
+    },
+    {
+      "property": {
+        "id": "castalia-705",
+        "name": "カスタリア麻布十番 705号室",
+        "use": "residential",
+        "address": "東京都港区麻布十番2-10-1",
+        "stations": [
+          {
+            "line": "東京メトロ南北線",
+            "station": "麻布十番",
+            "walkMinutes": 3
+          },
+          {
+            "line": "都営大江戸線",
+            "station": "赤羽橋",
+            "walkMinutes": 13
+          }
+        ],
+        "areaSqm": 42.84,
+        "builtYearMonth": "2005-09",
+        "floor": 7,
+        "totalFloors": 7,
+        "provenance": "extracted",
+        "source": {
+          "file": "募集図面.pdf",
+          "page": 2,
+          "documentDate": "2026-09-01"
+        },
+        "note": "更新料 新賃料1ヶ月 / 退去時 室内清掃 1㎡あたり1,100円"
+      },
+      "status": "adopted",
+      "reason": "麻布十番駅徒歩5分圏・居住用・面積36〜43㎡",
+      "rent": 280000,
+      "managementFee": 10000,
+      "initialCosts": [
+        {
+          "id": "castalia-705-0",
+          "label": "敷金",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 1,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "castalia-705-1",
+          "label": "礼金",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 1,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "castalia-705-2",
+          "label": "鍵交換費",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 27500
+          }
+        },
+        {
+          "id": "castalia-705-3",
+          "label": "損害保険（2年）",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 22000
+          }
+        },
+        {
+          "id": "castalia-705-4",
+          "label": "保証料（初回）",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 0.5,
+            "base": "rent"
+          }
+        }
+      ]
+    },
+    {
+      "property": {
+        "id": "castalia-603",
+        "name": "カスタリア麻布十番 603号室",
+        "use": "residential",
+        "address": "東京都港区麻布十番2-10-1",
+        "stations": [
+          {
+            "line": "東京メトロ南北線",
+            "station": "麻布十番",
+            "walkMinutes": 3
+          },
+          {
+            "line": "都営大江戸線",
+            "station": "赤羽橋",
+            "walkMinutes": 13
+          }
+        ],
+        "areaSqm": 36.95,
+        "builtYearMonth": "2005-09",
+        "floor": 6,
+        "totalFloors": 7,
+        "provenance": "extracted",
+        "source": {
+          "file": "募集図面.pdf",
+          "page": 5,
+          "documentDate": "2026-09-01"
+        },
+        "note": "更新料 新賃料1ヶ月 / カスタリア705と同一建物"
+      },
+      "status": "adopted",
+      "reason": "麻布十番駅徒歩5分圏・居住用・面積36〜43㎡",
+      "rent": 241000,
+      "managementFee": 10000,
+      "initialCosts": [
+        {
+          "id": "castalia-603-0",
+          "label": "敷金",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 1,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "castalia-603-1",
+          "label": "礼金",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 0
+          }
+        },
+        {
+          "id": "castalia-603-2",
+          "label": "鍵交換費",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 27500
+          }
+        },
+        {
+          "id": "castalia-603-3",
+          "label": "損害保険（2年）",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 22000
+          }
+        },
+        {
+          "id": "castalia-603-4",
+          "label": "保証料（初回）",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 0.5,
+            "base": "rent"
+          }
+        }
+      ]
+    },
+    {
+      "property": {
+        "id": "minami-azabu-702",
+        "name": "南麻布1-5-8 702号室",
+        "use": "residential",
+        "address": "東京都港区南麻布1-5-8",
+        "stations": [
+          {
+            "line": "東京メトロ南北線",
+            "station": "麻布十番",
+            "walkMinutes": 4
+          }
+        ],
+        "areaSqm": 39,
+        "builtYearMonth": "1970-01",
+        "floor": 7,
+        "totalFloors": 7,
+        "provenance": "extracted",
+        "source": {
+          "file": "募集図面.pdf",
+          "page": 7,
+          "documentDate": "2026-09-01"
+        },
+        "note": "更新料 改定賃料1ヶ月 / 管理費なし / 面積は「契約面積」表記 / 竣工1970年"
+      },
+      "status": "adopted",
+      "reason": "麻布十番駅徒歩5分圏・居住用・面積36〜43㎡",
+      "rent": 185000,
+      "managementFee": 0,
+      "initialCosts": [
+        {
+          "id": "minami-azabu-702-0",
+          "label": "敷金",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 2,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "minami-azabu-702-1",
+          "label": "礼金",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 1,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "minami-azabu-702-2",
+          "label": "仲介手数料",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 1,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "minami-azabu-702-3",
+          "label": "鍵交換費",
+          "month": 0,
+          "amount": {
+            "kind": "unknown"
+          }
+        },
+        {
+          "id": "minami-azabu-702-4",
+          "label": "火災保険",
+          "month": 0,
+          "amount": {
+            "kind": "unknown"
+          }
+        }
+      ]
+    },
+    {
+      "property": {
+        "id": "maison-higashi-azabu-401",
+        "name": "メゾン東麻布 401号室",
+        "use": "residential",
+        "address": "東京都港区東麻布2-22-10",
+        "stations": [
+          {
+            "line": "東京メトロ南北線",
+            "station": "麻布十番",
+            "walkMinutes": 5
+          },
+          {
+            "line": "都営大江戸線",
+            "station": "赤羽橋",
+            "walkMinutes": 3
+          }
+        ],
+        "areaSqm": 38,
+        "builtYearMonth": "1983-01",
+        "floor": 4,
+        "totalFloors": 4,
+        "provenance": "extracted",
+        "source": {
+          "file": "募集図面.pdf",
+          "page": 8,
+          "documentDate": "2026-09-01"
+        },
+        "note": "更新料1ヶ月 / 24時間保守サービス21,600円 / 築年は年のみ記載"
+      },
+      "status": "adopted",
+      "reason": "麻布十番駅徒歩5分圏・居住用・面積36〜43㎡",
+      "rent": 178000,
+      "managementFee": 12000,
+      "initialCosts": [
+        {
+          "id": "maison-higashi-azabu-401-0",
+          "label": "敷金",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 2,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "maison-higashi-azabu-401-1",
+          "label": "礼金",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 1,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "maison-higashi-azabu-401-2",
+          "label": "鍵交換費用",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 16200
+          }
+        },
+        {
+          "id": "maison-higashi-azabu-401-3",
+          "label": "契約事務手数料",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 16500
+          }
+        },
+        {
+          "id": "maison-higashi-azabu-401-4",
+          "label": "書類作成代",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 3300
+          }
+        },
+        {
+          "id": "maison-higashi-azabu-401-5",
+          "label": "衛生消毒",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 16500
+          }
+        },
+        {
+          "id": "maison-higashi-azabu-401-6",
+          "label": "火災保険",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 23800
+          }
+        }
+      ]
+    },
+    {
+      "property": {
+        "id": "iida-annex-501",
+        "name": "イイダアネックス麻布十番 501号室",
+        "use": "residential",
+        "address": "東京都港区東麻布3-7-8",
+        "stations": [
+          {
+            "line": "東京メトロ南北線",
+            "station": "麻布十番",
+            "walkMinutes": 2
+          },
+          {
+            "line": "都営大江戸線",
+            "station": "赤羽橋",
+            "walkMinutes": 6
+          }
+        ],
+        "areaSqm": 43.06,
+        "builtYearMonth": "1992-08",
+        "floor": 5,
+        "totalFloors": 5,
+        "provenance": "extracted",
+        "source": {
+          "file": "募集図面.pdf",
+          "page": 9,
+          "documentDate": "2026-09-01"
+        },
+        "note": "更新料の記載なし（「-----」）/ 2DK / エレベーターなし / 1年未満解約で違約金"
+      },
+      "status": "adopted",
+      "reason": "麻布十番駅徒歩5分圏・居住用・面積36〜43㎡",
+      "rent": 170000,
+      "managementFee": 5000,
+      "initialCosts": [
+        {
+          "id": "iida-annex-501-0",
+          "label": "敷金",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 2,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "iida-annex-501-1",
+          "label": "礼金",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 2,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "iida-annex-501-2",
+          "label": "仲介手数料",
+          "month": 0,
+          "amount": {
+            "kind": "multiplier",
+            "times": 1,
+            "base": "rent"
+          }
+        },
+        {
+          "id": "iida-annex-501-3",
+          "label": "家財保険（2年）",
+          "month": 0,
+          "amount": {
+            "kind": "fixed",
+            "yen": 15000
+          }
+        },
+        {
+          "id": "iida-annex-501-4",
+          "label": "鍵交換代",
+          "month": 0,
+          "amount": {
+            "kind": "unknown"
+          }
+        }
+      ]
+    }
+  ],
+  "renewal": {
+    "contractMonths": 24,
+    "renewalFee": {
+      "kind": "multiplier",
+      "times": 1,
+      "base": "rent"
+    },
+    "monthly": [],
+    "otherOneTime": [],
+    "discounts": [],
+    "freeRent": [],
+    "deposits": [],
+    "prepaidRent": 0
+  },
+  "moveCandidates": [],
+  "settings": {
+    "horizonMonths": 24,
+    "searchHorizonMonths": 120,
+    "rounding": "round"
+  },
+  "relet": {
+    "reletMonthlyIncome": 0,
+    "vacantMonths": 2
+  },
+  "thresholds": {
+    "fairBandPct": 2.5,
+    "strongWarningPct": 20,
+    "minSampleCount": 5
+  }
+}

@@ -15,6 +15,7 @@ import { RScale } from './RScale'
 import { LandlordReport } from './reports/LandlordReport'
 import { TenantReport } from './reports/TenantReport'
 import { PromptPanel } from './PromptPanel'
+import { Guide } from './Guide'
 
 const yen = (v: number) => `${Math.round(v).toLocaleString('ja-JP')}円`
 const pct = (v: number) => `${v >= 0 ? '+' : ''}${(v * 100).toFixed(1)}%`
@@ -29,10 +30,12 @@ export function Workspace() {
   const [override, setOverride] = useState<number | ''>('')
   const [offerRent, setOfferRent] = useState<number | ''>('')
   const [report, setReport] = useState<Report>('none')
+  const [guideOpen, setGuideOpen] = useState(true)
 
   const onFile = async (f: File) => {
     setFileName(f.name)
     setReport('none')
+    setGuideOpen(false)   // 読み込めたら使い方は畳む
     try {
       setImported(importWorkbook(await f.arrayBuffer()))
     } catch (err) {
@@ -84,6 +87,8 @@ export function Workspace() {
 
   return (
     <div className="wrap">
+      <Guide open={guideOpen} onToggle={() => setGuideOpen(!guideOpen)} />
+
       {/* ───── 1. 入力シート ───── */}
       <section className="panel">
         <h2>1. 入力シートを読み込む</h2>
