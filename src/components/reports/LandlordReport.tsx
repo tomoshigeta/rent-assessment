@@ -63,7 +63,7 @@ export function LandlordReport({ subject, listings, assessed, result, vacancyMon
       <section>
         <h2>採用した比較事例（{usable.length}件）</h2>
         <div className="scroll-x">
-          <table className="sheet">
+          <table className="sheet striped">
             <thead><tr><th>物件名</th><th>交通</th><th className="num">面積</th><th>築年月</th><th className="num">月額総額</th><th className="num">㎡単価</th></tr></thead>
             <tbody>
               {usable.map((l, i) => (

@@ -1,5 +1,7 @@
 'use client'
 
+import { Fragment } from 'react'
+
 import { monthlyTotal, currentTotal, ratePerSqm, validateListing } from '@/core'
 import { access, age, today, yen, type ReportProps } from './shared'
 
@@ -81,24 +83,53 @@ export function TenantReport({ subject, listings, assessed, offerRent }: ReportP
         <p className="fine" style={{ marginBottom: 10 }}>
           いずれも {usable[0]?.confirmedOn ?? ''} 時点で募集中の条件です。募集元を記載していますので、条件はご自身でもご確認いただけます。
         </p>
-        {usable.map((l, i) => (
-          <div className="case" key={i}>
-            <div className="hd">
-              <span className="nm">{l.name}</span>
-              <span className="pr">月額 {yen(monthlyTotal(l))}　（{Math.round(ratePerSqm(l)).toLocaleString()}円/㎡）</span>
-            </div>
-            <dl>
-              <dt>条件</dt>
-              <dd>{[`${l.areaSqm}㎡`, access(l) !== '—' ? access(l) : null, l.builtYearMonth ? `${l.builtYearMonth}築` : null, l.floor ? `${l.floor}階` : null].filter(Boolean).join('　／　')}</dd>
-              <dt>内訳</dt>
-              <dd>家賃 {yen(l.rent)}　管理費 {yen(l.managementFee)}</dd>
-              {l.similarity && <><dt>共通する点</dt><dd>{l.similarity}</dd></>}
-              {l.difference && <><dt>賃料差の要因</dt><dd>{l.difference}</dd></>}
-              <dt>出典</dt>
-              <dd>{l.sourceAgency}　{l.confirmedOn} 確認{l.sourceRef ? `　${l.sourceRef}` : ''}</dd>
-            </dl>
-          </div>
-        ))}
+        <table className="cases">
+          <thead>
+            <tr>
+              <th>物件名</th>
+              <th>面積</th>
+              <th>交通</th>
+              <th>築年月・階</th>
+              <th className="num">月額</th>
+              <th className="num">㎡単価</th>
+            </tr>
+          </thead>
+          <tbody>
+            {usable.map((l, i) => {
+              // 1物件を2行で組む。縞は物件単位でかけないと、補足行だけ色が飛ぶ。
+              const stripe = i % 2 === 1 ? 'odd' : ''
+              const notes: [string, string][] = []
+              if (l.similarity) notes.push(['共通する点', l.similarity])
+              if (l.difference) notes.push(['賃料差の要因', l.difference])
+              notes.push(['出典', `${l.sourceAgency}　${l.confirmedOn} 確認${l.sourceRef ? `　${l.sourceRef}` : ''}`])
+              return (
+                <Fragment key={i}>
+                  <tr className={`spec ${stripe}`}>
+                    <td className="nm">{l.name}</td>
+                    <td>{l.areaSqm}㎡</td>
+                    <td>{access(l)}</td>
+                    <td>{[l.builtYearMonth ?? '—', l.floor ? `${l.floor}階` : null].filter(Boolean).join('　')}</td>
+                    <td className="num">
+                      {yen(monthlyTotal(l))}
+                      <span className="breakdown">家賃 {yen(l.rent)}／管理費 {yen(l.managementFee)}</span>
+                    </td>
+                    <td className="num">{Math.round(ratePerSqm(l)).toLocaleString()}円</td>
+                  </tr>
+                  <tr className={`more ${stripe}`}>
+                    <td colSpan={6}>
+                      {notes.map(([k, v], n) => (
+                        <span key={k}>
+                          {n > 0 && '　／　'}
+                          <span className="more-k">{k}:</span> {v}
+                        </span>
+                      ))}
+                    </td>
+                  </tr>
+                </Fragment>
+              )
+            })}
+          </tbody>
+        </table>
       </section>
 
       <section>

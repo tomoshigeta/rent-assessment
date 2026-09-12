@@ -129,25 +129,37 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .doc table.sheet { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .doc table.sheet th, .doc table.sheet td { padding: 6px 9px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .doc table.sheet thead th { border-bottom: 1.5px solid var(--band); font-weight: 600; white-space: nowrap; }
-.doc table.sheet th.row { width: 8.5em; color: var(--muted); font-weight: 400; background: none; }
+.doc table.sheet th.row { width: 8.5em; color: var(--muted); font-weight: 400; background: transparent; }
 .doc table.sheet td.num, .doc table.sheet th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.doc tr.emph td, .doc tr.emph th { background: var(--emph); font-weight: 600; }
+/* 行全体を網掛けする。th.row より詳細度を上げないと、見出しセルだけ白く抜ける。 */
+.doc table.sheet tr.emph td,
+.doc table.sheet tr.emph th,
+.doc table.sheet tr.emph th.row { background: var(--emph); font-weight: 600; color: var(--ink); }
 .doc .lead { font-size: 14px; margin: 0 0 12px; }
 .doc .fine { font-size: 11.5px; color: var(--muted); line-height: 1.7; }
 .doc ul.fine { margin: 0; padding-left: 1.3em; }
-.doc .case { border-bottom: 1px solid var(--line); padding: 9px 0; break-inside: avoid; }
-.doc .case:last-child { border-bottom: none; }
-.doc .case .hd { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
-.doc .case .nm { font-weight: 600; font-size: 13px; }
-.doc .case .pr { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.doc .case dl { display: grid; grid-template-columns: 7em 1fr; gap: 1px 10px; margin: 5px 0 0; font-size: 11.5px; }
-.doc .case dt { color: var(--muted); }
-.doc .case dd { margin: 0; }
+/* 比較事例の一覧。1物件＝2行（条件行＋補足行）。縞は物件単位でかける。 */
+.doc table.cases { width: 100%; border-collapse: collapse; font-size: 12px; }
+.doc table.cases thead th {
+  padding: 6px 8px; text-align: left; white-space: nowrap;
+  border-bottom: 1.5px solid var(--band); font-weight: 600;
+}
+.doc table.cases td { padding: 6px 8px; vertical-align: top; }
+.doc table.cases tr.spec td { border-top: 1px solid var(--line); }
+.doc table.cases tr.more td { padding-top: 0; padding-bottom: 9px; font-size: 11px; color: var(--muted); line-height: 1.65; }
+.doc table.cases tbody tr.odd td { background: var(--stripe); }
+.doc table.sheet.striped tbody tr:nth-child(even) td,
+.doc table.sheet.striped tbody tr:nth-child(even) th { background: var(--stripe); }
+.doc table.cases td.num, .doc table.cases th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.doc table.cases .nm { font-weight: 600; }
+.doc table.cases .breakdown { display: block; font-size: 10.5px; color: var(--muted); font-weight: 400; }
+.doc table.cases .more-k { color: var(--ink); }
+.doc table.cases tr.spec, .doc table.cases tr.more { break-inside: avoid; }
 
 /* 借主用: 落ち着いた濃紺 */
-.doc.tenant { --band: #26405c; --emph: #eef2f7; }
+.doc.tenant { --band: #26405c; --emph: #e3eaf3; --stripe: #eceff4; }
 /* 貸主用: 社外秘。臙脂 */
-.doc.landlord { --band: #7a3b34; --emph: #f6efee; }
+.doc.landlord { --band: #7a3b34; --emph: #f1e5e3; --stripe: #f4ebe9; }
 .doc.landlord .confidential {
   display: inline-block; border: 1px solid var(--band); color: var(--band);
   font-size: 11px; padding: 1px 8px; border-radius: 2px; letter-spacing: .1em; margin-bottom: 8px;
@@ -157,5 +169,7 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
   .doc section { margin-bottom: 18px; }
   .doc { font-size: 10.5pt; }
   .doc table.sheet { font-size: 9.5pt; }
-  .doc .fine, .doc .case dl { font-size: 8.5pt; }
+  .doc .fine { font-size: 8.5pt; }
+  .doc table.cases { font-size: 9pt; }
+  .doc table.cases tr.more td { font-size: 8pt; }
 }
