@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "fileName": "更新賃料検討_入力シート.xlsx",
   "note": "金額はすべて税込。家賃と管理費は分けて入れ、アプリが合算した月額総額で計算する。",
   "sheets": [
@@ -10,16 +10,139 @@
       "maxRows": 1,
       "description": "更新を検討している部屋。1行だけ記入する。",
       "columns": [
-        { "key": "name", "header": "物件名", "required": true, "kind": "text", "example": "麻布十番ロイヤルプレイス 604号室", "width": 30 },
-        { "key": "currentRent", "header": "現在家賃", "required": true, "kind": "yen", "example": 210000, "width": 12, "note": "税込・月額。管理費は含めない" },
-        { "key": "currentManagementFee", "header": "現在管理費", "required": true, "kind": "yen", "example": 0, "width": 12, "note": "税込・月額。無ければ0" },
-        { "key": "areaSqm", "header": "面積(㎡)", "required": true, "kind": "area", "example": 38.1, "width": 10, "note": "専有・契約・壁芯の別は区別しない" },
-        { "key": "address", "header": "所在地", "required": false, "kind": "text", "example": "東京都港区麻布十番2-1-1", "width": 28 },
-        { "key": "line", "header": "沿線", "required": false, "kind": "text", "example": "東京メトロ南北線", "width": 18 },
-        { "key": "station", "header": "駅", "required": false, "kind": "text", "example": "麻布十番", "width": 12 },
-        { "key": "walkMinutes", "header": "徒歩(分)", "required": false, "kind": "minutes", "example": 2, "width": 9 },
-        { "key": "builtYearMonth", "header": "築年月", "required": false, "kind": "yearMonth", "example": "2005-09", "width": 11, "note": "YYYY-MM または YYYY" },
-        { "key": "floor", "header": "所在階", "required": false, "kind": "floor", "example": 6, "width": 8 }
+        {
+          "key": "name",
+          "header": "物件名",
+          "required": true,
+          "kind": "text",
+          "example": "麻布十番ロイヤルプレイス 604号室",
+          "width": 30
+        },
+        {
+          "key": "currentRent",
+          "header": "現在家賃",
+          "required": true,
+          "kind": "yen",
+          "example": 210000,
+          "width": 12,
+          "note": "税込・月額。管理費は含めない"
+        },
+        {
+          "key": "currentManagementFee",
+          "header": "現在管理費",
+          "required": true,
+          "kind": "yen",
+          "example": 0,
+          "width": 12,
+          "note": "税込・月額。無ければ0"
+        },
+        {
+          "key": "areaSqm",
+          "header": "面積(㎡)",
+          "required": true,
+          "kind": "area",
+          "example": 38.1,
+          "width": 10,
+          "note": "専有・契約・壁芯の別は区別しない"
+        },
+        {
+          "key": "address",
+          "header": "所在地",
+          "required": false,
+          "kind": "text",
+          "example": "東京都港区麻布十番2-1-1",
+          "width": 28
+        },
+        {
+          "key": "line",
+          "header": "沿線",
+          "required": false,
+          "kind": "text",
+          "example": "東京メトロ南北線",
+          "width": 18
+        },
+        {
+          "key": "station",
+          "header": "駅",
+          "required": false,
+          "kind": "text",
+          "example": "麻布十番",
+          "width": 12
+        },
+        {
+          "key": "walkMinutes",
+          "header": "徒歩(分)",
+          "required": false,
+          "kind": "minutes",
+          "example": 2,
+          "width": 9
+        },
+        {
+          "key": "builtYearMonth",
+          "header": "築年月",
+          "required": false,
+          "kind": "yearMonth",
+          "example": "2005-09",
+          "width": 11,
+          "note": "YYYY-MM または YYYY"
+        },
+        {
+          "key": "floor",
+          "header": "所在階",
+          "required": false,
+          "kind": "floor",
+          "example": 6,
+          "width": 8
+        },
+        {
+          "key": "layout",
+          "header": "間取り",
+          "required": false,
+          "kind": "text",
+          "example": "1LDK",
+          "width": 10
+        },
+        {
+          "key": "contractUse",
+          "header": "契約用途",
+          "required": false,
+          "kind": "text",
+          "example": "居住用（事務所使用可）",
+          "width": 20
+        },
+        {
+          "key": "renovatedOn",
+          "header": "改装時期",
+          "required": false,
+          "kind": "yearMonth",
+          "example": "2024-03",
+          "width": 11
+        },
+        {
+          "key": "renovationNote",
+          "header": "改装内容",
+          "required": false,
+          "kind": "text",
+          "example": "洗面台・浴室・フローリング交換",
+          "width": 28
+        },
+        {
+          "key": "furnished",
+          "header": "家具の有無",
+          "required": false,
+          "kind": "text",
+          "example": "なし",
+          "width": 11
+        },
+        {
+          "key": "previousRenewalOn",
+          "header": "前回更新日",
+          "required": false,
+          "kind": "yearMonth",
+          "example": "2024-12",
+          "width": 12,
+          "note": "「前回から◯年据え置き」を説明に使う"
+        }
       ]
     },
     {
@@ -27,18 +150,132 @@
       "kind": "listings",
       "firstDataRow": 3,
       "minRows": 5,
-      "description": "周辺の募集図面から転記する。査定賃料の自動算出には5件以上が必要。ここに入れた行はすべて集計対象になるので、条件の合わない物件は入れないこと。",
+      "description": "周辺の募集図面から転記する。査定賃料の自動算出には5件以上が必要。ここに入れた行はすべて集計対象になるので、条件の合わない物件は入れないこと。算定に使った事例はすべて借主向け資料に掲載されるため、募集元と確認日は必須。",
       "columns": [
-        { "key": "name", "header": "物件名", "required": true, "kind": "text", "example": "カスタリア麻布十番 705号室", "width": 30 },
-        { "key": "rent", "header": "賃料", "required": true, "kind": "yen", "example": 280000, "width": 12, "note": "税込・月額。管理費は含めない" },
-        { "key": "managementFee", "header": "管理費", "required": true, "kind": "yen", "example": 10000, "width": 12, "note": "共益費を含む。無ければ0" },
-        { "key": "areaSqm", "header": "面積(㎡)", "required": true, "kind": "area", "example": 42.84, "width": 10 },
-        { "key": "address", "header": "所在地", "required": false, "kind": "text", "example": "東京都港区麻布十番2-10-1", "width": 28 },
-        { "key": "line", "header": "沿線", "required": false, "kind": "text", "example": "東京メトロ南北線", "width": 18 },
-        { "key": "station", "header": "駅", "required": false, "kind": "text", "example": "麻布十番", "width": 12 },
-        { "key": "walkMinutes", "header": "徒歩(分)", "required": false, "kind": "minutes", "example": 3, "width": 9 },
-        { "key": "builtYearMonth", "header": "築年月", "required": false, "kind": "yearMonth", "example": "2005-09", "width": 11 },
-        { "key": "floor", "header": "所在階", "required": false, "kind": "floor", "example": 7, "width": 8 }
+        {
+          "key": "name",
+          "header": "物件名",
+          "required": true,
+          "kind": "text",
+          "example": "カスタリア麻布十番 705号室",
+          "width": 30
+        },
+        {
+          "key": "rent",
+          "header": "賃料",
+          "required": true,
+          "kind": "yen",
+          "example": 280000,
+          "width": 12,
+          "note": "税込・月額。管理費は含めない"
+        },
+        {
+          "key": "managementFee",
+          "header": "管理費",
+          "required": true,
+          "kind": "yen",
+          "example": 10000,
+          "width": 12,
+          "note": "共益費を含む。無ければ0"
+        },
+        {
+          "key": "areaSqm",
+          "header": "面積(㎡)",
+          "required": true,
+          "kind": "area",
+          "example": 42.84,
+          "width": 10
+        },
+        {
+          "key": "address",
+          "header": "所在地",
+          "required": false,
+          "kind": "text",
+          "example": "東京都港区麻布十番2-10-1",
+          "width": 28
+        },
+        {
+          "key": "line",
+          "header": "沿線",
+          "required": false,
+          "kind": "text",
+          "example": "東京メトロ南北線",
+          "width": 18
+        },
+        {
+          "key": "station",
+          "header": "駅",
+          "required": false,
+          "kind": "text",
+          "example": "麻布十番",
+          "width": 12
+        },
+        {
+          "key": "walkMinutes",
+          "header": "徒歩(分)",
+          "required": false,
+          "kind": "minutes",
+          "example": 3,
+          "width": 9
+        },
+        {
+          "key": "builtYearMonth",
+          "header": "築年月",
+          "required": false,
+          "kind": "yearMonth",
+          "example": "2005-09",
+          "width": 11
+        },
+        {
+          "key": "floor",
+          "header": "所在階",
+          "required": false,
+          "kind": "floor",
+          "example": 7,
+          "width": 8
+        },
+        {
+          "key": "sourceAgency",
+          "header": "募集元",
+          "required": true,
+          "kind": "text",
+          "example": "株式会社モリモトクオリティ",
+          "width": 26,
+          "note": "借主が自分で確認できるようにするため必須"
+        },
+        {
+          "key": "confirmedOn",
+          "header": "確認日",
+          "required": true,
+          "kind": "date",
+          "example": "2026-09-01",
+          "width": 12,
+          "note": "募集条件を確認した日。必須"
+        },
+        {
+          "key": "sourceRef",
+          "header": "出典",
+          "required": false,
+          "kind": "text",
+          "example": "募集図面 p.2 / https://…",
+          "width": 30
+        },
+        {
+          "key": "similarity",
+          "header": "本住戸との共通点",
+          "required": false,
+          "kind": "text",
+          "example": "同一駅徒歩3分圏・1LDK・40㎡前後",
+          "width": 30
+        },
+        {
+          "key": "difference",
+          "header": "賃料差の要因",
+          "required": false,
+          "kind": "text",
+          "example": "築6年新しく、オートロック・宅配ボックスあり",
+          "width": 34
+        }
       ]
     }
   ]

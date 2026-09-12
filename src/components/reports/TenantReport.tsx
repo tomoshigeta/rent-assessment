@@ -1,84 +1,118 @@
 'use client'
 
 import { monthlyTotal, currentTotal, ratePerSqm, validateListing } from '@/core'
-import { access, age, pct, today, yen, type ReportProps } from './shared'
+import { access, age, today, yen, type ReportProps } from './shared'
 
 /**
  * 借主向け「更新賃料のご提案」。
  *
- * 貸主の内部検討は一切載せない。r の幅、貸主下限、原状回復費用、空室期間、
- * 転居との費用比較、逆転月はすべて除く（docs/spec.md 第5章）。
- * 借主上限も載せない — その額まで粘れると教えることになるため。
+ * 載せないもの（docs/spec.md 第5章）:
+ *   貸主下限・掛け目 r・原状回復費用・空室期間・転居との費用比較・逆転月・借主上限
+ *   査定賃料の円単位の金額（未確認事項の多い査定を1円単位で示さない）
+ *   改定開始希望日・回答希望日・連絡先（メール本文が担う）
+ *
+ * 「査定賃料」という語は使わない。貸主側の内部用語であり、
+ * 借主から見れば誰が査定したのかという疑問を招くため。
  */
-export function TenantReport({ subject, listings, assessed, result, offerRent }: ReportProps) {
-  const offer = offerRent ?? result.A
-  const shown = listings.filter((l) => validateListing(l).every((i) => !i.blocking)).slice(0, 5)
+export function TenantReport({ subject, listings, assessed, offerRent }: ReportProps) {
+  // 提示額は必須。画面側で未入力なら資料を開けないようにしている。
+  const offer = offerRent!
   const R0 = currentTotal(subject)
+  const usable = listings.filter((l) => validateListing(l).length === 0)
+  const diff = offer - R0
+  const offerRentOnly = offer - subject.currentManagementFee
 
   return (
-    <>
-      <section className="panel">
-        <h2 style={{ fontSize: 18 }}>更新賃料のご提案</h2>
-        <p className="note">{subject.name}　作成日: {today()}</p>
-      </section>
+    <div className="doc tenant">
+      <div className="band">
+        <h1>更新賃料のご提案</h1>
+        <p className="docmeta">{subject.name}　／　{today()} 作成</p>
+      </div>
 
-      <section className="panel">
-        <h2>現在と提案後の条件</h2>
-        <table className="data">
-          <thead><tr><th></th><th className="num">家賃</th><th className="num">管理費</th><th className="num">月額総額</th></tr></thead>
+      <section>
+        <h2>現在の賃料と、ご提案する賃料</h2>
+        <table className="sheet">
+          <thead>
+            <tr><th></th><th className="num">家賃</th><th className="num">管理費</th><th className="num">月額合計</th></tr>
+          </thead>
           <tbody>
-            <tr><td>現在</td><td className="num">{yen(subject.currentRent)}</td><td className="num">{yen(subject.currentManagementFee)}</td><td className="num">{yen(R0)}</td></tr>
-            <tr><td>ご提案</td><td className="num">—</td><td className="num">—</td><td className="num"><strong>{yen(offer)}</strong></td></tr>
-            <tr><td>増減</td><td className="num">—</td><td className="num">—</td><td className="num">{offer - R0 >= 0 ? '+' : ''}{yen(offer - R0)}（{pct(offer / R0 - 1)}）</td></tr>
+            <tr>
+              <th className="row">現在</th>
+              <td className="num">{yen(subject.currentRent)}</td>
+              <td className="num">{yen(subject.currentManagementFee)}</td>
+              <td className="num">{yen(R0)}</td>
+            </tr>
+            <tr className="emph">
+              <th className="row">ご提案</th>
+              <td className="num">{yen(offerRentOnly)}</td>
+              <td className="num">{yen(subject.currentManagementFee)}</td>
+              <td className="num">{yen(offer)}</td>
+            </tr>
+            <tr>
+              <th className="row">増減</th>
+              <td className="num">{diff >= 0 ? '+' : ''}{yen(diff)}</td>
+              <td className="num">据え置き</td>
+              <td className="num">{diff >= 0 ? '+' : ''}{yen(diff)}（{diff >= 0 ? '+' : ''}{((diff / R0) * 100).toFixed(1)}%）</td>
+            </tr>
           </tbody>
         </table>
-        <p className="note">金額は税込の月額総額です。</p>
-      </section>
-
-      <section className="panel">
-        <h2>ご提案の理由</h2>
-        <p>
-          周辺の募集条件{assessed.sampleCount}件を、面積あたりの単価に直して比較しました。
-          その中央値は <strong>{Math.round(assessed.medianRatePerSqm ?? 0).toLocaleString()}円/㎡</strong> で、
-          お部屋の面積 {subject.areaSqm}㎡ に当てはめると <strong>{yen(result.A)}</strong> となります。
-          ご提案額はこれに対して {pct(offer / result.A - 1)} の水準です。
+        <p className="fine" style={{ marginTop: 8 }}>
+          金額は税込です。管理費は現在と同額で据え置きます。
         </p>
-        {assessed.source === 'override' && <p className="note">査定賃料は別途の査定によります。</p>}
       </section>
 
-      <section className="panel">
-        <h2>周辺募集との比較</h2>
-        <div className="scroll-x">
-          <table className="data">
-            <thead>
-              <tr>
-                <th>項目</th><th>お部屋</th>
-                {shown.map((_, i) => <th key={i}>比較{String.fromCharCode(65 + i)}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              <tr><th>所在地</th><td>{subject.address || '—'}</td>{shown.map((l, i) => <td key={i}>{l.address || '—'}</td>)}</tr>
-              <tr><th>交通</th><td>{access(subject)}</td>{shown.map((l, i) => <td key={i}>{access(l)}</td>)}</tr>
-              <tr><th>面積</th><td>{subject.areaSqm}㎡</td>{shown.map((l, i) => <td key={i}>{l.areaSqm}㎡</td>)}</tr>
-              <tr><th>築年月</th><td>{age(subject)}</td>{shown.map((l, i) => <td key={i}>{age(l)}</td>)}</tr>
-              <tr><th>所在階</th><td>{subject.floor ?? '—'}</td>{shown.map((l, i) => <td key={i}>{l.floor ?? '—'}</td>)}</tr>
-              <tr><th>月額総額</th><td><strong>{yen(offer)}</strong></td>{shown.map((l, i) => <td key={i}>{yen(monthlyTotal(l))}</td>)}</tr>
-              <tr><th>㎡単価</th><td>{Math.round(offer / subject.areaSqm).toLocaleString()}円</td>{shown.map((l, i) => <td key={i}>{Math.round(ratePerSqm(l)).toLocaleString()}円</td>)}</tr>
-            </tbody>
-          </table>
-        </div>
-        {listings.length > shown.length && <p className="note">比較事例が多いため、{shown.length}件を掲載しています。</p>}
+      <section>
+        <h2>お部屋の条件</h2>
+        <table className="sheet">
+          <tbody>
+            <tr><th className="row">所在地</th><td>{subject.address || '—'}</td><th className="row">交通</th><td>{access(subject)}</td></tr>
+            <tr><th className="row">面積</th><td>{subject.areaSqm}㎡</td><th className="row">間取り</th><td>{subject.layout || '—'}</td></tr>
+            <tr><th className="row">築年月</th><td>{age(subject)}</td><th className="row">所在階</th><td>{subject.floor ? `${subject.floor}階` : '—'}</td></tr>
+            <tr><th className="row">契約用途</th><td>{subject.contractUse || '—'}</td><th className="row">家具</th><td>{subject.furnished || '—'}</td></tr>
+            {(subject.renovatedOn || subject.renovationNote) && (
+              <tr><th className="row">改装</th><td colSpan={3}>{[subject.renovatedOn, subject.renovationNote].filter(Boolean).join('　')}</td></tr>
+            )}
+          </tbody>
+        </table>
       </section>
 
-      <section className="panel">
-        <h2>前提</h2>
-        <ul style={{ margin: 0, paddingLeft: 20 }}>
-          <li>金額はすべて税込の月額総額（家賃＋管理費）です。</li>
-          <li>比較は面積あたりの単価で行っています。築年・階・向きの差は補正していません。</li>
-          <li>将来の賃料変動は見込んでいません。</li>
+      <section>
+        <h2>比較した周辺の募集条件（{usable.length}件）</h2>
+        <p className="fine" style={{ marginBottom: 10 }}>
+          いずれも {usable[0]?.confirmedOn ?? ''} 時点で募集中の条件です。募集元を記載していますので、条件はご自身でもご確認いただけます。
+        </p>
+        {usable.map((l, i) => (
+          <div className="case" key={i}>
+            <div className="hd">
+              <span className="nm">{l.name}</span>
+              <span className="pr">月額 {yen(monthlyTotal(l))}　（{Math.round(ratePerSqm(l)).toLocaleString()}円/㎡）</span>
+            </div>
+            <dl>
+              <dt>条件</dt>
+              <dd>{[`${l.areaSqm}㎡`, access(l) !== '—' ? access(l) : null, l.builtYearMonth ? `${l.builtYearMonth}築` : null, l.floor ? `${l.floor}階` : null].filter(Boolean).join('　／　')}</dd>
+              <dt>内訳</dt>
+              <dd>家賃 {yen(l.rent)}　管理費 {yen(l.managementFee)}</dd>
+              {l.similarity && <><dt>共通する点</dt><dd>{l.similarity}</dd></>}
+              {l.difference && <><dt>賃料差の要因</dt><dd>{l.difference}</dd></>}
+              <dt>出典</dt>
+              <dd>{l.sourceAgency}　{l.confirmedOn} 確認{l.sourceRef ? `　${l.sourceRef}` : ''}</dd>
+            </dl>
+          </div>
+        ))}
+      </section>
+
+      <section>
+        <h2>比較にあたっての前提</h2>
+        <ul className="fine">
+          <li>金額はいずれも税込の月額合計（家賃＋管理費）です。</li>
+          <li>面積あたりの単価に換算して比較しています。{usable.length}件の単価は
+            1㎡あたり {Math.round(Math.min(...usable.map(ratePerSqm))).toLocaleString()}円 〜 {Math.round(Math.max(...usable.map(ratePerSqm))).toLocaleString()}円 と幅があり、
+            その中央値は {Math.round(assessed.medianRatePerSqm ?? 0).toLocaleString()}円 でした。</li>
+          <li>築年・階数・向き・設備の違いは金額として補正していません。面積の違いのみ揃えています。</li>
+          <li>いずれも募集時点の条件であり、実際に契約された賃料ではありません。</li>
+          <li>比較した{usable.length}件は貸主側で選定したものです。網羅的な調査ではありません。</li>
         </ul>
-        <p className="note" style={{ marginTop: 10 }}>資料日: {today()}</p>
       </section>
-    </>
+    </div>
   )
 }

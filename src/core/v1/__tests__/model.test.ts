@@ -11,16 +11,17 @@ import {
 } from '../assumptions'
 import { breakEvenMonth, landlordFloor, rentRange, tenantCeiling } from '../model'
 import { assessRent, ratePerSqm, validateListing, validateSubject } from '../assess'
+import { elapsedSince } from '../prompt'
 import type { Listing, Subject } from '../types'
 
 /** 実図面6件。賃料・管理費・面積のみ（計算に効く3項目）。 */
 const listings: Listing[] = [
-  { name: 'アーバンパーク麻布十番 0902', rent: 310_000, managementFee: 10_000, areaSqm: 42.14 },
-  { name: 'カスタリア麻布十番 705', rent: 280_000, managementFee: 10_000, areaSqm: 42.84 },
-  { name: 'カスタリア麻布十番 603', rent: 241_000, managementFee: 10_000, areaSqm: 36.95 },
-  { name: '南麻布1-5-8 702', rent: 185_000, managementFee: 0, areaSqm: 39.0 },
-  { name: 'メゾン東麻布 401', rent: 178_000, managementFee: 12_000, areaSqm: 38.0 },
-  { name: 'イイダアネックス麻布十番 501', rent: 170_000, managementFee: 5_000, areaSqm: 43.06 },
+  { name: 'アーバンパーク麻布十番 0902', rent: 310_000, managementFee: 10_000, areaSqm: 42.14 , sourceAgency: '三菱地所ハウスネット', confirmedOn: '2026-09-01' },
+  { name: 'カスタリア麻布十番 705', rent: 280_000, managementFee: 10_000, areaSqm: 42.84 , sourceAgency: '株式会社モリモトクオリティ', confirmedOn: '2026-09-01' },
+  { name: 'カスタリア麻布十番 603', rent: 241_000, managementFee: 10_000, areaSqm: 36.95 , sourceAgency: '株式会社モリモトクオリティ', confirmedOn: '2026-09-01' },
+  { name: '南麻布1-5-8 702', rent: 185_000, managementFee: 0, areaSqm: 39.0 , sourceAgency: '三井のリハウス 赤坂支店', confirmedOn: '2026-09-01' },
+  { name: 'メゾン東麻布 401', rent: 178_000, managementFee: 12_000, areaSqm: 38.0 , sourceAgency: '（募集図面に記載）', confirmedOn: '2026-09-01' },
+  { name: 'イイダアネックス麻布十番 501', rent: 170_000, managementFee: 5_000, areaSqm: 43.06 , sourceAgency: '株式会社ワールドインベストメンツ', confirmedOn: '2026-09-01' },
 ]
 
 /** 対象物件: 麻布十番ロイヤルプレイス。現在賃料は仮定値。 */
@@ -159,14 +160,14 @@ describe('逆転月', () => {
 
 describe('入力の検証', () => {
   it('必須項目が欠けていれば計算に使えない', () => {
-    expect(validateListing({ name: '', rent: 0, managementFee: -1, areaSqm: 0 })
+    expect(validateListing({ name: '', rent: 0, managementFee: -1, areaSqm: 0, sourceAgency: '', confirmedOn: '' })
       .filter((i) => i.blocking).map((i) => i.field))
-      .toEqual(['物件名', '賃料', '管理費', '面積'])
+      .toEqual(['物件名', '賃料', '管理費', '面積', '募集元', '確認日'])
   })
 
   it('管理費0円は正当な値として通す', () => {
     // 実図面の南麻布1-5-8は管理費なし
-    expect(validateListing({ name: '管理費なし', rent: 185_000, managementFee: 0, areaSqm: 39 })).toEqual([])
+    expect(validateListing({ name: '管理費なし', rent: 185_000, managementFee: 0, areaSqm: 39, sourceAgency: 'A社', confirmedOn: '2026-09-01' })).toEqual([])
   })
 
   it('実図面6件はすべて検証を通る', () => {
@@ -175,13 +176,49 @@ describe('入力の検証', () => {
   })
 
   it('万円単位・坪単位の取り違えを警告する（弾きはしない）', () => {
-    const w = validateListing({ name: 'テスト', rent: 28, managementFee: 1, areaSqm: 12.9 })
+    const w = validateListing({ name: 'テスト', rent: 28, managementFee: 1, areaSqm: 12.9, sourceAgency: 'A社', confirmedOn: '2026-09-01' })
     expect(w.every((i) => !i.blocking)).toBe(true)
     expect(w.map((i) => i.field)).toEqual(['賃料', '面積'])
   })
 
   it('管理費が賃料を上回れば警告する', () => {
-    const w = validateListing({ name: 'テスト', rent: 100_000, managementFee: 200_000, areaSqm: 40 })
+    const w = validateListing({ name: 'テスト', rent: 100_000, managementFee: 200_000, areaSqm: 40, sourceAgency: 'A社', confirmedOn: '2026-09-01' })
     expect(w.map((i) => i.field)).toContain('管理費')
+  })
+})
+
+describe('出典の必須化', () => {
+  const base = { name: '比較', rent: 200_000, managementFee: 0, areaSqm: 40 }
+  it('募集元が空なら集計に使えない', () => {
+    const i = validateListing({ ...base, sourceAgency: '', confirmedOn: '2026-09-01' })
+    expect(i.some((x) => x.field === '募集元' && x.blocking)).toBe(true)
+  })
+  it('確認日が空なら集計に使えない', () => {
+    const i = validateListing({ ...base, sourceAgency: 'A社', confirmedOn: '' })
+    expect(i.some((x) => x.field === '確認日' && x.blocking)).toBe(true)
+  })
+  it('共通点と賃料差の要因は任意', () => {
+    expect(validateListing({ ...base, sourceAgency: 'A社', confirmedOn: '2026-09-01' })).toEqual([])
+  })
+})
+
+describe('警告は集計から除外しない', () => {
+  it('坪の疑いがある事例も、必須項目が揃っていれば中央値に入る', () => {
+    // 面積14㎡は「坪で入っていませんか」の警告が出るが、除外はしない
+    const odd = { name: '狭小', rent: 90_000, managementFee: 0, areaSqm: 14, sourceAgency: 'A社', confirmedOn: '2026-09-01' }
+    expect(validateListing(odd).some((i) => i.blocking)).toBe(false)
+    expect(validateListing(odd).length).toBeGreaterThan(0)
+    const a = assessRent(subject, [...listings, odd], undefined)
+    expect(a.sampleCount).toBe(7)
+  })
+})
+
+describe('据え置き期間', () => {
+  it('年だけに丸めず、年と月で出す', () => {
+    const now = new Date(2026, 8, 12) // 2026-09
+    expect(elapsedSince('2024-12', now)).toBe('1年9ヶ月')
+    expect(elapsedSince('2024-09', now)).toBe('2年')
+    expect(elapsedSince('2026-06', now)).toBe('3ヶ月')
+    expect(elapsedSince(undefined, now)).toBeNull()
   })
 })

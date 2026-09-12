@@ -35,7 +35,7 @@ export function assessRent(
   override: Yen | undefined,
   rounding: RoundingMode = 'round',
 ): AssessedRent {
-  const usable = listings.filter((l) => validateListing(l).length === 0)
+  const usable = listings.filter((l) => validateListing(l).every((i) => !i.blocking))
   const rates = usable.map(ratePerSqm)
   const medianRate = rates.length > 0 ? median(rates.map((r) => r * 1000), rounding) / 1000 : null
 
@@ -76,6 +76,9 @@ export function validateListing(l: Listing): Issue[] {
   if (!Number.isFinite(l.rent) || l.rent <= 0) issues.push({ field: '賃料', message: '空欄か0以下です', blocking: true })
   if (!Number.isFinite(l.managementFee) || l.managementFee < 0) issues.push({ field: '管理費', message: '空欄か負の値です', blocking: true })
   if (!Number.isFinite(l.areaSqm) || l.areaSqm <= 0) issues.push({ field: '面積', message: '空欄か0以下です', blocking: true })
+  // 出典は計算に使わないが、借主が検証できない事例は資料に載せられない。
+  if (!l.sourceAgency?.trim()) issues.push({ field: '募集元', message: '空欄です。借主が確認できる情報が要ります', blocking: true })
+  if (!l.confirmedOn?.trim()) issues.push({ field: '確認日', message: '空欄です', blocking: true })
   if (issues.length > 0) return issues
 
   // 桁違い・単位違いの検知。ここで弾かず、確認を促すに留める。

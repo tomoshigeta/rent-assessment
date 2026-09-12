@@ -21,6 +21,16 @@ export interface Listing {
   /** YYYY-MM または YYYY。 */
   builtYearMonth?: string
   floor?: number
+  /** 必須。募集元。借主が自分で確認できるようにするため。 */
+  sourceAgency: string
+  /** 必須。募集条件を確認した日 (YYYY-MM-DD)。 */
+  confirmedOn: string
+  /** 出典。図面名やURL。 */
+  sourceRef?: string
+  /** 本住戸との共通点。資料に載せる。 */
+  similarity?: string
+  /** 賃料差の要因。資料に載せる。 */
+  difference?: string
   /** 何行目から読んだか。検証結果を元のセルへ戻すために持つ。 */
   sourceRow?: number
 }
@@ -40,6 +50,13 @@ export interface Subject {
   walkMinutes?: number
   builtYearMonth?: string
   floor?: number
+  layout?: string
+  contractUse?: string
+  renovatedOn?: string
+  renovationNote?: string
+  furnished?: string
+  /** 前回更新日。「前回から◯年据え置き」の説明に使う。 */
+  previousRenewalOn?: string
 }
 
 /** 貸主が画面で入れる前提。結果を見ながら動かす値なので Excel には入れない。 */

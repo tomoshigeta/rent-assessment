@@ -10,14 +10,16 @@ import {
 } from '@/core'
 import { EXCEL_SPEC } from '@/excel/columns'
 import { importWorkbook, type ImportResult } from '@/excel/import'
+import { roundedOffers } from '@/core'
 import { RScale } from './RScale'
 import { LandlordReport } from './reports/LandlordReport'
 import { TenantReport } from './reports/TenantReport'
+import { PromptPanel } from './PromptPanel'
 
 const yen = (v: number) => `${Math.round(v).toLocaleString('ja-JP')}円`
 const pct = (v: number) => `${v >= 0 ? '+' : ''}${(v * 100).toFixed(1)}%`
 
-type Report = 'none' | 'landlord' | 'tenant'
+type Report = 'none' | 'landlord' | 'tenant' | 'prompt'
 
 export function Workspace() {
   const [imported, setImported] = useState<ImportResult | null>(null)
@@ -61,6 +63,10 @@ export function Workspace() {
       markdown: R0 > assessed.yen,
     }
   }, [subject, assessed, restorationCost, vacancyMonths, offerRent])
+
+  if (report === 'prompt' && result && subject && assessed?.yen && offerRent !== '') {
+    return <PromptPanel subject={subject} listings={listings} assessed={assessed} offerRent={offerRent} onBack={() => setReport('none')} />
+  }
 
   if (report !== 'none' && result && subject && assessed?.yen) {
     const common = { subject, listings, assessed, result, vacancyMonths, restorationCost: Number(restorationCost), offerRent: offerRent === '' ? undefined : offerRent }
@@ -165,11 +171,25 @@ export function Workspace() {
                   onChange={(e) => setOverride(e.target.value === '' ? '' : Math.max(0, Math.round(Number(e.target.value))))} />
               </label>
               <label className="field">
-                <span>提示額（任意）</span>
+                <span>提示額（資料の出力に必要）</span>
                 <input type="number" min={0} step={1000} value={offerRent}
                   onChange={(e) => setOfferRent(e.target.value === '' ? '' : Math.max(0, Math.round(Number(e.target.value))))} />
               </label>
             </div>
+            {assessed?.yen && (
+              <div className="row-actions" style={{ marginTop: 10 }}>
+                <span className="note">提示額の候補（1,000円単位）:</span>
+                {roundedOffers(assessed.yen).map((v) => (
+                  <button key={v} type="button" className="btn small" onClick={() => setOfferRent(v)}>
+                    {v.toLocaleString()}円
+                  </button>
+                ))}
+                <span className="note">
+                  算定上の目安は {assessed.yen.toLocaleString()}円。1円単位のまま提示すると、
+                  計算の精密さと根拠の確かさが釣り合いません。
+                </span>
+              </div>
+            )}
           </section>
 
           {/* ───── 4. 結果 ───── */}
@@ -248,8 +268,12 @@ export function Workspace() {
                 )}
 
                 <div className="row-actions no-print" style={{ marginTop: 18 }}>
-                  <button className="btn" onClick={() => setReport('landlord')}>貸主用の資料</button>
-                  <button className="btn" onClick={() => setReport('tenant')}>借主用の資料</button>
+                  <button className="btn" onClick={() => setReport('landlord')} disabled={offerRent === ''}>貸主用の資料</button>
+                  <button className="btn" onClick={() => setReport('tenant')} disabled={offerRent === ''}>借主用の資料</button>
+                  <button className="btn primary" onClick={() => setReport('prompt')} disabled={offerRent === ''}>
+                    借主へ送るメールの下書きを作る
+                  </button>
+                  {offerRent === '' && <span className="note">提示額を入れると資料を出せます。</span>}
                 </div>
               </>
             )}

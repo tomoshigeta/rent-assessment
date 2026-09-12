@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="app">
           <div className="inner">
             <h1><a href="/" style={{ color: 'inherit', textDecoration: 'none' }}>更新賃料検討アプリ</a></h1>
-            <span className="sub">v1.0 — 査定賃料に対する掛け目 r</span>
+            <span className="sub">v1.0</span>
           </div>
         </header>
         {children}

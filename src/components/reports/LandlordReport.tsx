@@ -12,16 +12,14 @@ export function LandlordReport({ subject, listings, assessed, result, vacancyMon
   const R0 = currentTotal(subject)
 
   return (
-    <>
-      <section className="panel">
-        <h2 style={{ fontSize: 18 }}>更新賃料の検討結果</h2>
-        <p className="note">{subject.name}　作成日: {today()}　比較期間: {HORIZON_MONTHS}ヶ月</p>
-        <p className="note" style={{ color: 'var(--danger)' }}>
-          本資料は貸主用です。譲歩の下限と前提を含むため、借主へは渡さないでください。
-        </p>
-      </section>
+    <div className="doc landlord">
+      <div className="band">
+        <span className="confidential">社外秘 — 借主へ渡さないこと</span>
+        <h1>更新賃料の検討結果</h1>
+        <p className="docmeta">{subject.name}　／　{today()} 作成　／　比較期間 {HORIZON_MONTHS}ヶ月</p>
+      </div>
 
-      <section className="panel">
+      <section>
         <h2>結論</h2>
         {result.range.crossed ? (
           <p><strong>この条件では双方が成立しません。</strong>貸主下限 {yen(result.range.floor)} が借主上限 {yen(result.range.ceiling)} を上回っています。交渉ではなく、退去を前提に考えるべき状態です。</p>
@@ -33,26 +31,26 @@ export function LandlordReport({ subject, listings, assessed, result, vacancyMon
           </p>
         )}
         {result.markdown && (
-          <p className="note" style={{ color: 'var(--warn)' }}>
+          <p className="fine" style={{ color: 'var(--warn)' }}>
             値下げ局面です。現在賃料が査定賃料を上回っています。上限 r は借主の転居コストによる居座り余地であって、値上げの根拠ではありません。
           </p>
         )}
       </section>
 
-      <section className="panel">
+      <section>
         <h2>内訳</h2>
-        <table className="data">
+        <table className="sheet">
           <tbody>
             <tr><th>査定賃料</th><td className="num">{yen(result.A)}</td>
-              <td className="note">{assessed.source === 'override' ? '手入力による上書き' : `採用${assessed.sampleCount}件の㎡単価中央値 ${Math.round(assessed.medianRatePerSqm ?? 0).toLocaleString()}円/㎡ × ${subject.areaSqm}㎡`}</td></tr>
-            <tr><th>現在賃料</th><td className="num">{yen(R0)}</td><td className="note">査定賃料との差 {pct(R0 / result.A - 1)}</td></tr>
+              <td className="fine">{assessed.source === 'override' ? '手入力による上書き' : `採用${assessed.sampleCount}件の㎡単価中央値 ${Math.round(assessed.medianRatePerSqm ?? 0).toLocaleString()}円/㎡ × ${subject.areaSqm}㎡`}</td></tr>
+            <tr><th>現在賃料</th><td className="num">{yen(R0)}</td><td className="fine">査定賃料との差 {pct(R0 / result.A - 1)}</td></tr>
             <tr><th>貸主側の下限</th><td className="num">{yen(result.range.floor)}</td>
-              <td className="note">(査定 × ({HORIZON_MONTHS}−{vacancyMonths}) − 原状回復 {yen(restorationCost)}) ÷ {HORIZON_MONTHS + RENEWAL_FEE_MONTHS}</td></tr>
+              <td className="fine">(査定 × ({HORIZON_MONTHS}−{vacancyMonths}) − 原状回復 {yen(restorationCost)}) ÷ {HORIZON_MONTHS + RENEWAL_FEE_MONTHS}</td></tr>
             <tr><th>借主側の上限</th><td className="num">{yen(result.range.ceiling)}</td>
-              <td className="note">現在賃料 × {TENANT_CEILING_FACTOR.toFixed(4)}（約{((TENANT_CEILING_FACTOR - 1) * 100).toFixed(1)}%増まで）</td></tr>
+              <td className="fine">現在賃料 × {TENANT_CEILING_FACTOR.toFixed(4)}（約{((TENANT_CEILING_FACTOR - 1) * 100).toFixed(1)}%増まで）</td></tr>
             {offerRent !== undefined && (
               <tr><th>提示額</th><td className="num"><strong>{yen(offerRent)}</strong></td>
-                <td className="note">
+                <td className="fine">
                   r = {(offerRent / result.A).toFixed(3)}、現在賃料から {pct(offerRent / R0 - 1)}。
                   {result.breakEven === null ? '転居が安くなることはありません。'
                     : `${result.breakEven}ヶ月目から転居のほうが安くなります${result.breakEven > HORIZON_MONTHS ? `（比較期間の外）` : '（比較期間の内側）'}。`}
@@ -62,10 +60,10 @@ export function LandlordReport({ subject, listings, assessed, result, vacancyMon
         </table>
       </section>
 
-      <section className="panel">
+      <section>
         <h2>採用した比較事例（{usable.length}件）</h2>
         <div className="scroll-x">
-          <table className="data">
+          <table className="sheet">
             <thead><tr><th>物件名</th><th>交通</th><th className="num">面積</th><th>築年月</th><th className="num">月額総額</th><th className="num">㎡単価</th></tr></thead>
             <tbody>
               {usable.map((l, i) => (
@@ -78,13 +76,13 @@ export function LandlordReport({ subject, listings, assessed, result, vacancyMon
           </table>
         </div>
         {listings.length > usable.length && (
-          <p className="note">必須項目が欠けていた {listings.length - usable.length} 件を集計から除きました。</p>
+          <p className="fine">必須項目が欠けていた {listings.length - usable.length} 件を集計から除きました。</p>
         )}
       </section>
 
-      <section className="panel">
+      <section>
         <h2>この計算が置いている仮定</h2>
-        <table className="data">
+        <table className="sheet">
           <tbody>
             <tr><th>比較期間</th><td>{HORIZON_MONTHS}ヶ月（固定）</td></tr>
             <tr><th>更新料</th><td>新賃料の{RENEWAL_FEE_MONTHS}ヶ月分。実際の募集図面では1ヶ月が主流で、{RENEWAL_FEE_MONTHS - 1}ヶ月分高く見積もっている</td></tr>
@@ -96,10 +94,10 @@ export function LandlordReport({ subject, listings, assessed, result, vacancyMon
             <tr><th>相場並みの帯</th><td>±{FAIR_BAND_PCT}%。表示のみで計算には影響しない</td></tr>
           </tbody>
         </table>
-        <p className="note" style={{ marginTop: 8 }}>
+        <p className="fine" style={{ marginTop: 8 }}>
           各仮定の根拠と実データとの差は、仕様書 docs/spec.md 第2章に記録してあります。
         </p>
       </section>
-    </>
+    </div>
   )
 }

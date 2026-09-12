@@ -4,7 +4,7 @@
  */
 import spec from './columns.json'
 
-export type ColumnKind = 'text' | 'yen' | 'area' | 'minutes' | 'yearMonth' | 'floor'
+export type ColumnKind = 'text' | 'yen' | 'area' | 'minutes' | 'yearMonth' | 'date' | 'floor'
 
 export interface ColumnSpec {
   key: string

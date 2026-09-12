@@ -25,9 +25,10 @@ const norm = (v: unknown): string =>
 function coerce(value: unknown, kind: ColumnKind): string | number | undefined {
   if (value === null || value === undefined || value === '') return undefined
   if (kind === 'text') return String(value).trim() || undefined
-  if (kind === 'yearMonth') {
+  if (kind === 'yearMonth' || kind === 'date') {
     if (value instanceof Date) {
-      return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}`
+      const y = value.getFullYear(), m = String(value.getMonth() + 1).padStart(2, '0')
+      return kind === 'date' ? `${y}-${m}-${String(value.getDate()).padStart(2, '0')}` : `${y}-${m}`
     }
     return String(value).trim() || undefined
   }
@@ -116,6 +117,12 @@ export function importWorkbook(data: ArrayBuffer): ImportResult {
       walkMinutes: r.walkMinutes as number | undefined,
       builtYearMonth: r.builtYearMonth as string | undefined,
       floor: r.floor as number | undefined,
+      layout: r.layout as string | undefined,
+      contractUse: r.contractUse as string | undefined,
+      renovatedOn: r.renovatedOn as string | undefined,
+      renovationNote: r.renovationNote as string | undefined,
+      furnished: r.furnished as string | undefined,
+      previousRenewalOn: r.previousRenewalOn as string | undefined,
     }
   }
 
@@ -146,6 +153,11 @@ export function importWorkbook(data: ArrayBuffer): ImportResult {
       walkMinutes: r.walkMinutes as number | undefined,
       builtYearMonth: r.builtYearMonth as string | undefined,
       floor: r.floor as number | undefined,
+      sourceAgency: String(r.sourceAgency ?? ''),
+      confirmedOn: String(r.confirmedOn ?? ''),
+      sourceRef: r.sourceRef as string | undefined,
+      similarity: r.similarity as string | undefined,
+      difference: r.difference as string | undefined,
       sourceRow: sheetRow,
     })
   })
