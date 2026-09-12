@@ -25,12 +25,24 @@ export function elapsedSince(yearMonth?: string, now = new Date()): string | nul
   return mm === 0 ? `${yy}年` : `${yy}年${mm}ヶ月`
 }
 
+/** 差出人の立場。文面の主語が変わる。 */
+export type SenderRole = 'agency' | 'landlord'
+/** 借主の敬称。法人なら御中、個人なら様。 */
+export type Honorific = 'corporate' | 'individual'
+
 export interface PromptInput {
   subject: Subject
   listings: Listing[]
   assessed: AssessedRent
   /** 貸主が決めた提示額（月額総額）。丸めた後の額を渡す。 */
   offerRent: number
+  senderRole?: SenderRole
+  honorific?: Honorific
+  /** 分かっていればプロンプトに埋め込む。未指定なら【　】のまま残す。 */
+  tenantName?: string
+  effectiveFrom?: string
+  replyBy?: string
+  senderContact?: string
 }
 
 /** 借主に説明してよい事実だけを並べた材料。 */
@@ -59,7 +71,8 @@ export function buildMaterial({ subject, listings, assessed, offerRent }: Prompt
   L.push(`  現在の賃料  月額 ${yen(R0)}（家賃 ${yen(subject.currentRent)}／管理費 ${yen(subject.currentManagementFee)}・税込）`)
   L.push(`  提示する賃料 月額 ${yen(offerRent)}（家賃 ${yen(offerRent - subject.currentManagementFee)}／管理費 ${yen(subject.currentManagementFee)}・税込）`)
   L.push(`  差額        ${diff >= 0 ? '+' : ''}${yen(diff)}（${diff >= 0 ? '+' : ''}${((diff / R0) * 100).toFixed(1)}%）`)
-  L.push(`  管理費      据え置き`)
+  // 現在も提示も0円なら「据え置き」に意味がなく、文面に不自然な一文を生む
+  if (subject.currentManagementFee > 0) L.push('  管理費      据え置き（現在と同額）')
   if (subject.previousRenewalOn) {
     L.push(`  前回更新    ${subject.previousRenewalOn}${held !== null ? `（現在の賃料は${held}のあいだ据え置き）` : ''}`)
   }
@@ -104,29 +117,62 @@ export function buildMaterial({ subject, listings, assessed, offerRent }: Prompt
   return L.join('\n')
 }
 
+const SLOT = (label: string, value?: string) => value?.trim() || `【${label}】`
+
 /** そのまま貼れるプロンプト一式。 */
 export function buildPrompt(input: PromptInput): string {
-  return `あなたは賃貸借契約の更新実務に通じた立場で、貸主側の担当者が借主へ送るメールの文面を作成します。
+  const role = input.senderRole === 'landlord'
+    ? '貸主本人が借主へ送るメール'
+    : '管理会社の担当者が、貸主に代わって借主へ送るメール'
+  const honor = input.honorific === 'individual'
+    ? '借主は個人。宛名は「様」を付ける。'
+    : '借主は法人。宛名は「御中」を付ける。'
+
+  const slots = [
+    `  借主名          ${SLOT('借主氏名', input.tenantName)}`,
+    `  改定開始希望日  ${SLOT('改定開始希望日', input.effectiveFrom)}`,
+    `  回答希望日      ${SLOT('回答希望日', input.replyBy)}`,
+    `  差出人          ${SLOT('担当者名・会社名・連絡先', input.senderContact)}`,
+  ].join('\n')
+
+  return `${role}の文面を作成してください。賃貸借契約の更新実務に通じた立場で書きます。
+
+# 何より大事なこと：短く書く
+
+**本文は15行程度に収める。** 読み手は借主で、長い説明は途中で読まれない。
+
+比較の方法、面積あたりの単価、根拠の限界は**すべて添付資料に書いてある。**
+本文で繰り返さない。「比較した物件と算出の考え方は添付の資料にまとめております」の
+一文で添付へ渡す。
+
+本文に入れるのはこれだけ。
+
+  1. 何の件か（物件名と、いつからの賃料の話か）
+  2. 現在いくらで、いくらにしたいか（金額を並べる。差額も書く）
+  3. なぜか（1〜2文。据え置き期間と、周辺と比較したことに触れる程度）
+  4. 詳細は添付にある、という一文
+  5. 金額には相談の余地があること
+  6. いつまでに返事がほしいか
+  7. 署名
 
 # 守ること
 
 - **協議の申し入れとして書く。** 一方的な決定の通知と読める表現にしない。
-- **金額の根拠を、借主自身が検証できる形で示す。** 比較事例は名称と募集元を挙げ、確認日を添える。
-- **相手が反論する余地を残す。** 金額に相談の余地があることを明示する。
-- **根拠の限界に触れる。** 下記「この根拠の限界」の内容を、こちらから先に述べる。隠して後から指摘されるより誠実で、交渉上も有利。
+- **相手が反論する余地を残す。**
 - **法令の解釈には立ち入らない。** 条文の引用や、法的効果の断定をしない。
 - **下記の材料にない数字を書かない。** 推測で補わない。
+- 比較事例の一覧は本文に入れない。添付に委ねる。
+- ${honor}
 
-# 埋めてもらう欄
+# 差し込む値
 
-文面には次を【　】のまま残してください。送信前に担当者が埋めます。
+${slots}
 
-  【借主氏名】【改定開始希望日】【回答希望日】【担当者名・会社名・連絡先】
+【　】が残っている項目は、そのまま【　】で出力してください。送信前に担当者が埋めます。
 
 # 出力
 
-件名と本文。装飾記号は使わず、そのままメールに貼れる形で。
-比較事例の一覧表は本文に入れず、「詳細は添付の資料をご覧ください」として添付に委ねてください。
+件名と本文。装飾記号や見出し記号は使わず、そのままメールに貼れる形で。
 
 ---
 
